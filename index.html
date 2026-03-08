@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auxílio FF - @org.mac4</title>
+    <style>
+        body { margin: 0; padding: 0; background: #000; overflow: hidden; font-family: 'Courier New', Courier, monospace; color: #0f0; }
+        canvas { position: fixed; top: 0; left: 0; z-index: -1; }
+
+        .container { display: flex; justify-content: center; align-items: center; height: 100vh; width: 100%; }
+
+        .card {
+            background: rgba(0, 10, 0, 0.98);
+            border: 2px solid #0f0;
+            border-radius: 25px;
+            padding: 25px;
+            width: 380px;
+            max-height: 90vh;
+            overflow-y: auto;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+        }
+
+        .perfil { width: 90px; height: 90px; border-radius: 50%; border: 3px solid #0f0; margin-bottom: 10px; box-shadow: 0 0 10px #0f0; }
+
+        input[type="text"] {
+            width: 90%; padding: 12px; margin: 15px 0;
+            background: #000; border: 1px solid #0f0; color: #0f0;
+            border-radius: 10px; text-align: center; outline: none;
+        }
+
+        button {
+            width: 100%; padding: 12px; background: #0f0; color: #000;
+            border: none; border-radius: 10px; font-weight: bold; cursor: pointer;
+            margin-top: 10px; transition: 0.3s; text-transform: uppercase;
+        }
+
+        button:hover { background: #0a0; box-shadow: 0 0 15px #0f0; }
+
+        .hidden { display: none; }
+
+        .opcao { margin-bottom: 15px; border: 1px solid #0f3d0f; padding: 10px; border-radius: 12px; text-align: left; }
+        .titulo-opt { font-weight: bold; color: #fff; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+        .sub-opt { font-size: 0.85em; display: flex; flex-direction: column; gap: 6px; color: #0f0; }
+
+        .cmd-box { background: #000; color: #0f0; padding: 10px; font-size: 11px; height: 45px; border: 1px solid #0f0; margin: 10px 0; border-radius: 5px; }
+        .status-led { width: 18px; height: 18px; background: #000; border: 2px solid #fff; border-radius: 4px; display: inline-block; vertical-align: middle; }
+        .led-green { background: #0f0 !important; box-shadow: 0 0 10px #0f0; }
+
+        .extra-msg { font-size: 10px; color: #ccc; margin-top: 15px; padding: 10px; border: 1px dashed #0f0; border-radius: 8px; line-height: 1.4; }
+        .tiktok-btn { background: #000; color: #fff; border: 1px solid #ff0050; margin-top: 15px; }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #0f0; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <canvas id="matrix"></canvas>
+
+    <div class="container">
+        <!-- TELA DE LOGIN -->
+        <div id="login-screen" class="card">
+            <!-- Coloque o link da foto do Uriel abaixo -->
+            <img src="https://via.placeholder.com" alt="URIEL XITER" class="perfil">
+            <h2 style="margin:5px">URIEL XITER</h2>
+            <input type="text" id="key-input" placeholder="COLE SUA KEY AQUI">
+            <button onclick="entrar()">ACESSAR PAINEL</button>
+        </div>
+
+        <!-- PAINEL DE FUNÇÕES -->
+        <div id="main-panel" class="card hidden">
+            <h3 style="color: #fff;">PAINEL HACKER V2</h3>
+
+            <div class="opcao">
+                <div class="titulo-opt">⦿ AIMBOT</div>
+                <div class="sub-opt">
+                    <label><input type="checkbox"> AIMBOT 98%</label>
+                    <label><input type="checkbox"> AUMENTAR PRECISÃO</label>
+                    <label><input type="checkbox"> AUMENTAR TAXA DE HS</label>
+                    <label>AJUSTE SENSI (1-10): <input type="range" min="1" max="10" value="5"></label>
+                </div>
+            </div>
+
+            <div class="opcao">
+                <div class="titulo-opt">✚ ARMA ALTERAR</div>
+                <div class="sub-opt">
+                    <label><input type="checkbox"> SEM RECUO</label>
+                    <label><input type="checkbox"> PRECISÃO AVANÇADA</label>
+                </div>
+            </div>
+
+            <div class="opcao">
+                <div class="titulo-opt">⧉ FPS & TELA</div>
+                <div class="sub-opt">
+                    <label><input type="checkbox"> ATIVAR 120 FPS FORÇADO</label>
+                    <label><input type="checkbox"> 🖥️ ESTICAR TELA (MODO IPAD)</label>
+                </div>
+            </div>
+
+            <div class="opcao">
+                <div class="titulo-opt">🛡️ NÍVEL DE PROTEÇÃO</div>
+                <div class="sub-opt">
+                    <label>ANTIBAN: <input type="range" min="1" max="100" value="80"> 1-100</label>
+                </div>
+            </div>
+
+            <div class="opcao">
+                <div class="titulo-opt">💢 ANTI TREMER</div>
+                <div class="sub-opt">
+                    <label><input type="checkbox"> FIXAR MIRA NA CABEÇA</label>
+                </div>
+            </div>
+
+            <div class="opcao">
+                <div class="titulo-opt">📟 INJEÇÃO</div>
+                <div class="cmd-box" id="cmd-text">> AGUARDANDO COMANDO...</div>
+                <div style="margin-bottom:10px">
+                    STATUS: <div id="led" class="status-led"></div>
+                </div>
+                <button onclick="inject('FREE FIRE MAX')">ABRIR FF MAX</button>
+                <button onclick="inject('FREE FIRE')" style="background:#111; color:#0f0; border:1px solid #0f0; margin-top:5px;">ABRIR FF NORMAL</button>
+            </div>
+
+            <div class="extra-msg">
+                "ESSE É AUXÍLIO NÃO QUISER PUXAR PARA CABEÇA AUTOMÁTICO VOCÊ IRÁ PRECISAR SUBIR O BOTÃO DE ATIRAR E PEGAR O JEITO E TEM OUTROS QUE SÃO ASSIM MAS NÃO EXISTE AUXÍLIO QUE PUXA PARA CABEÇA AUTOMATICAMENTE"
+            </div>
+
+            <button class="tiktok-btn" onclick="window.open('https://tiktok.com')">MEU TIKTOK: @org.mac4</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        canvas.height = window.innerHeight; canvas.width = window.innerWidth;
+        const chars = "01010101101001011101";
+        const fontSize = 10;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function draw() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#0f0";
+            ctx.font = fontSize + "px monospace";
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(draw, 35);
+
+        function entrar() {
+            if(document.getElementById('key-input').value.trim() !== "") {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-panel').classList.remove('hidden');
+            } else { alert("DIGITE SUA KEY!"); }
+        }
+
+        function inject(game) {
+            document.getElementById('cmd-text').innerHTML = `> INJETANDO EM ${game}...<br>> SUCESSO!`;
+            document.getElementById('led').classList.add('led-green');
+            setTimeout(() => { alert(game + " INICIADO!"); }, 800);
+        }
+    </script>
+</body>
+</html>
